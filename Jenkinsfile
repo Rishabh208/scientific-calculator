@@ -38,12 +38,6 @@ pipeline {
             }
         }
 
-        stage('Deploy Container') {
-            steps {
-                sh 'docker run -d -p 8080:8080 $DOCKER_IMAGE'
-            }
-        }
-
         stage('Deploy with Ansible') {
                     steps {
                         sh 'ansible-playbook -i hosts.ini deploy.yml'
