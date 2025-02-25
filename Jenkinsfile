@@ -43,16 +43,6 @@ pipeline {
                         sh 'ansible-playbook -i hosts.ini deploy.yml'
                     }
                 }
-          stage('Run Container') {
-                      steps {
-                          // Stop and remove any existing container
-                          sh '''
-                          docker stop rksingh5/scientific-calculator || true
-                          docker rm rksingh5/scientific-calculator || true
-                          docker run -d -p 8080:8080 --name rksingh5/scientific-calculator rksingh5/scientific-calculator
-                          '''
-                      }
-                  }
     }
 
     post {
