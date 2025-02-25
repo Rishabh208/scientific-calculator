@@ -1,40 +1,63 @@
 package com.calculator;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class CalculatorTest {
-    private final Calculator calc = new Calculator();
+class CalculatorTest {
 
-    @Test
-    public void testAddition() {
-        assertEquals(5.0, calc.add(2, 3));
+    private Calculator calculator;
+
+    @BeforeEach
+    void setUp() {
+        calculator = new Calculator();
     }
 
     @Test
-    public void testSubtraction() {
-        assertEquals(1.0, calc.subtract(4, 3));
+    void testAddition() {
+        assertEquals(5.0, calculator.add(2, 3), 0.0001);
+        assertEquals(-1.0, calculator.add(-2, 1), 0.0001);
     }
 
     @Test
-    public void testMultiplication() {
-        assertEquals(12.0, calc.multiply(4, 3));
+    void testSubtraction() {
+        assertEquals(4.0, calculator.subtract(7, 3), 0.0001);
+        assertEquals(-3.0, calculator.subtract(-2, 1), 0.0001);
     }
 
     @Test
-    public void testDivision() {
-        assertEquals(2.0, calc.divide(6, 3));
+    void testMultiplication() {
+        assertEquals(6.0, calculator.multiply(2, 3), 0.0001);
+        assertEquals(-10.0, calculator.multiply(-2, 5), 0.0001);
     }
 
     @Test
-    public void testPower() {
-        assertEquals(8.0, calc.power(2, 3));
+    void testDivision() {
+        assertEquals(2.0, calculator.divide(6, 3), 0.0001);
+        assertEquals(-4.0, calculator.divide(-8, 2), 0.0001);
     }
 
     @Test
-    public void testSqrt() {
-        assertEquals(3.0, calc.sqrt(9));
+    void testDivisionByZero() {
+        Exception exception = assertThrows(ArithmeticException.class, () -> calculator.divide(5, 0));
+        assertEquals("Cannot divide by zero", exception.getMessage());
+    }
+
+    @Test
+    void testPower() {
+        assertEquals(8.0, calculator.power(2, 3), 0.0001);
+        assertEquals(0.25, calculator.power(2, -2), 0.0001);
+    }
+
+    @Test
+    void testSquareRoot() {
+        assertEquals(4.0, calculator.sqrt(16), 0.0001);
+        assertEquals(3.0, calculator.sqrt(9), 0.0001);
+    }
+
+    @Test
+    void testSquareRootOfNegativeNumber() {
+        Exception exception = assertThrows(ArithmeticException.class, () -> calculator.sqrt(-4));
+        assertEquals("Cannot compute square root of negative number", exception.getMessage());
     }
 }
-
