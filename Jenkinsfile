@@ -1,56 +1,86 @@
 pipeline {
     agent any
 
+    triggers {
+        githubPush()
+    }
+
     environment {
-        DOCKER_IMAGE = "rksingh5/scientific-calculator"
+        DOCKER_IMAGE_NAME = 'rksingh5/scientific-calculator'
+        GITHUB_REPO_URL = 'https://github.com/Rishabh208/SPE_Mini_Project.git'
     }
 
     stages {
-        stage('Clone Repository') {
+        stage('Checkout') {
             steps {
-                git 'https://github.com/Rishabh208/scientific-calculator.git'
+                script {
+                    // Checkout the code from the GitHub repository
+                    git branch: 'main', url: "${GITHUB_REPO_URL}"
+                }
             }
         }
 
-        stage('Build') {
+        stage('Build & Test') {
             steps {
-                sh '/usr/bin/mvn clean package'
-            }
-        }
-
-        stage('Test') {
-            steps {
-                sh 'mvn test'
+                script {
+                    sh 'mvn clean package' // Build the Java project
+                    sh 'mvn test' // Run unit tests
+                }
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t $DOCKER_IMAGE .'
-            }
-        }
-
-        stage('Push to DockerHub') {
-            steps {
-                withDockerRegistry([credentialsId: 'docker-hub-credentials', url: '']) {
-                    sh 'docker push $DOCKER_IMAGE'
-                }
-            }
-        }
-
-        stage('Deploy with Ansible') {
-                    steps {
-                        sh 'ansible-playbook -i hosts.ini deploy.yml'
+                script {
+                    def imageExists = sh(script: "docker images -q ${DOCKER_IMAGE_NAME}", returnStdout: true).trim()
+                    if (imageExists) {
+                        echo "Docker image already exists. Skipping build."
+                    } else {
+                        echo "Building new Docker image..."
+                        docker.build("${DOCKER_IMAGE_NAME}", '.')
                     }
                 }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    docker.withRegistry('', 'docker-hub-credentials') {
+                        sh 'docker tag calculator rksingh5/scientific-calculator:latest'
+                        sh 'docker push rksingh5/scientific-calculator'
+                    }
+                }
+            }
+        }
+
+        stage('Run Ansible Playbook') {
+            steps {
+                script {
+                    withEnv(["ANSIBLE_HOST_KEY_CHECKING=False"]) {
+                        ansiblePlaybook(
+                            playbook: 'deploy.yml',
+                            inventory: 'hosts.ini'
+                        )
+                    }
+                }
+            }
+        }
     }
 
     post {
         success {
-            echo 'Pipeline execution successful!'
+            mail to: 'rkumarsingh136@gmail.com',
+                 subject: "Application Deployment SUCCESS: Build ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                 body: "The build was successful!"
         }
         failure {
-            echo 'Pipeline failed!'
+            mail to: 'rkumarsingh136@gmail.com',
+                 subject: "Application Deployment FAILURE: Build ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                 body: "The build failed."
+        }
+        always {
+            cleanWs()
         }
     }
 }

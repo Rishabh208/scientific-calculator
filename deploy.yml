@@ -1,31 +1,34 @@
 ---
-- name: Deploy Scientific Calculator
-  hosts: servers
-  become: yes
-
+- name: Deploy Java Application
+  hosts: localhost
+  remote_user: rishabh
+  become: false
   tasks:
-    - name: Pull Docker image from Docker Hub
+
+    - name: Install Python Docker SDK
+      pip:
+        name: docker
+        executable: pip3
+
+    - name: Pull Docker Image from Docker Hub
       docker_image:
-        name: rksingh5/scientific-calculator
+        name: "rksingh5/scientific-calculator"
         source: pull
+      register: docker_pull_result
 
-    - name: Stop existing container
-      docker_container:
-        name: scientific-calculator
-        state: stopped
-      ignore_errors: yes
+    - name: Display Docker Pull Result
+      debug:
+        var: docker_pull_result
 
-    - name: Remove existing container
-      docker_container:
-        name: scientific-calculator
-        state: absent
-      ignore_errors: yes
-
-    - name: Run new container
-      docker_container:
-        name: scientific-calculator
-        image: rksingh5/scientific-calculator
+    - name: Ensure Docker service is running
+      service:
+        name: docker
         state: started
-        restart_policy: always
-        ports:
-          - "9090:8080"
+
+    - name: Stop and remove existing container if running
+      shell: |
+        docker ps -a --format '{{ "{{" }} .Names {{ "}}" }}' | grep -w calculator && docker stop calculator && docker rm calculator || true
+      ignore_errors: yes
+
+    - name: Run Java Application Container
+      shell: docker run -it -d --name calculator rksingh5/scientific-calculator
