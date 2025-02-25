@@ -47,9 +47,9 @@ pipeline {
                       steps {
                           // Stop and remove any existing container
                           sh '''
-                          docker stop scientific-calculator || true
-                          docker rm scientific-calculator || true
-                          docker run -d -p 8080:8080 --name scientific-calculator scientific-calculator
+                          docker stop rksingh5/scientific-calculator || true
+                          docker rm rksingh5/scientific-calculator || true
+                          docker run -d -p 8080:8080 --name rksingh5/scientific-calculator rksingh5/scientific-calculator
                           '''
                       }
                   }
