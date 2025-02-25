@@ -1,29 +1,96 @@
 package com.calculator;
+import java.util.Scanner;
 
 public class Calculator {
-    public double add(double a, double b) {
-        return a + b;
+
+    public static double calculateSquareRoot(double num) {
+        if (num < 0) {
+            System.out.println("Error: Cannot calculate square root of a negative number");
+            return Double.NaN;
+        }
+        return Math.sqrt(num);
     }
 
-    public double subtract(double a, double b) {
-        return a - b;
+    public static long calculateFactorial(int num) {
+        if (num < 0) {
+            System.out.println("Error: Cannot calculate factorial of a negative number");
+            return -1;
+        }
+        long result = 1;
+        for (int i = 2; i <= num; i++) {
+            result *= i;
+        }
+        return result;
     }
 
-    public double multiply(double a, double b) {
-        return a * b;
+    public static double calculateLogarithm(double num) {
+        if (num <= 0) {
+            System.out.println("Error: Cannot calculate natural logarithm of zero or negative number");
+            return Double.NaN;
+        }
+        return Math.log(num);
     }
 
-    public double divide(double a, double b) {
-        if (b == 0) throw new ArithmeticException("Cannot divide by zero");
-        return a / b;
-    }
-
-    public double power(double base, double exponent) {
+    public static double calculatePower(double base, double exponent) {
         return Math.pow(base, exponent);
     }
 
-    public double sqrt(double number) {
-        if (number < 0) throw new ArithmeticException("Cannot compute square root of negative number");
-        return Math.sqrt(number);
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        boolean start = true;
+
+        while(start) {
+            System.out.println("Scientific Calculator");
+            System.out.println("--------------------");
+            System.out.println("Select an operation:");
+            System.out.println("1. Square root (√x)");
+            System.out.println("2. Factorial (x!)");
+            System.out.println("3. Natural logarithm (ln(x))");
+            System.out.println("4. Power function (x^y)");
+            System.out.println("5. Exit");
+            System.out.print("Enter your choice (1-5): ");
+
+            int ch = sc.nextInt();
+
+            switch (ch) {
+                case 1:
+                    System.out.print("Enter a number: ");
+                    double sqrtInput = sc.nextDouble();
+                    System.out.println("Square root of " + sqrtInput + " = " + calculateSquareRoot(sqrtInput));
+                    break;
+
+                case 2:
+                    System.out.print("Enter a non-negative integer: ");
+                    int factInput = sc.nextInt();
+                    System.out.println("Factorial of " + factInput + " = " + calculateFactorial(factInput));
+                    break;
+
+                case 3:
+                    System.out.print("Enter a positive number: ");
+                    double logInput = sc.nextDouble();
+                    System.out.println("Natural logarithm of " + logInput + " = " + calculateLogarithm(logInput));
+                    break;
+
+                case 4:
+                    System.out.print("Enter the base (x): ");
+                    double base = sc.nextDouble();
+                    System.out.print("Enter the exponent (y): ");
+                    double exponent = sc.nextDouble();
+                    System.out.println(base + " raised to the power of " + exponent + " = " + calculatePower(base, exponent));
+                    break;
+
+                case 5:
+                    System.out.println("You are exiting!");
+                    start = false;
+                    break;
+
+                default:
+                    System.out.println("Invalid choice. Please select a number between 1 and 5.");
+            }
+            System.out.println();
+        }
+        sc.close();
     }
+
+
 }
