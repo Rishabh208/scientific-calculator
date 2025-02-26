@@ -51,7 +51,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>org.example.Main</mainClass>
+                            <mainClass>com.Calculator</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
