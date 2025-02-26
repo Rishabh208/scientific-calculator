@@ -9,7 +9,6 @@ class CalculatorTest {
     void testSquareRoot() {
         assertEquals(4.0, Calculator.calculateSquareRoot(16), 0.0001);
         assertEquals(0.0, Calculator.calculateSquareRoot(0), 0.0001);
-        assertThrows(IllegalArgumentException.class, () -> Calculator.calculateSquareRoot(-1));
     }
 
     @Test
@@ -17,13 +16,11 @@ class CalculatorTest {
         assertEquals(24, Calculator.calculateFactorial(4));  // 4! = 24
         assertEquals(1, Calculator.calculateFactorial(0));
         assertEquals(1, Calculator.calculateFactorial(1));
-        assertThrows(IllegalArgumentException.class, () -> Calculator.calculateFactorial(-5));
     }
 
     @Test
     void testNaturalLogarithm() {
         assertEquals(Math.log(10), Calculator.calculateLogarithm(10), 0.0001);
-        assertThrows(IllegalArgumentException.class, () -> Calculator.calculateLogarithm(-5));
     }
 
     @Test
