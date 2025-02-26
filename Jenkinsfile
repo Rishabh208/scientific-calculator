@@ -47,7 +47,7 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry('', 'docker-hub-credentials') {
-                        sh 'docker tag calculator rksingh5/scientific-calculator:latest'
+                        sh 'docker tag rksingh5/scientific-calculator rksingh5/scientific-calculator:latest'
                         sh 'docker push rksingh5/scientific-calculator'
                     }
                 }
