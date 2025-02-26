@@ -13,7 +13,7 @@ class CalculatorTest {
 
     @Test
     void testFactorial() {
-        assertEquals(20, Calculator.calculateFactorial(4));  // 4! = 24
+        assertEquals(24, Calculator.calculateFactorial(4));  // 4! = 24
         assertEquals(1, Calculator.calculateFactorial(0));
         assertEquals(1, Calculator.calculateFactorial(1));
     }
